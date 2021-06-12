@@ -4,6 +4,8 @@ const {response} = require("express");
 const {request} = require("express");
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         "name": "Arto Hellas",
@@ -69,7 +71,29 @@ app.get('/info', (request, response) => {
 
 })
 
+const randomID = () => {
+    return Math.floor(Math.random() * 1000)
+}
+// POST
+app.post('/api/persons' ,(request,response)=>{
+    const body = request.body;
 
+    if(!body.name) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: randomID()
+    }
+
+    persons = persons.concat(person);
+
+    response.json(person)
+})
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
