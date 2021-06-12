@@ -1,4 +1,5 @@
 const express = require('express')
+const {route} = require("express/lib/router");
 const {response} = require("express");
 const {request} = require("express");
 const app = express()
@@ -26,16 +27,19 @@ let persons = [
     }
 ]
 
+// Hello world
 app.get('/', (request, response) => {
     response.send('<h1>Hello world!</h1>')
 })
 
+// GET all
 app.get('/api/persons',
     (request, response) => {
         response.json(persons)
     }
 )
 
+// GET by id
 app.get('/api/persons/:id',
     (request, response) => {
         const id = Number(request.params.id)
@@ -49,7 +53,14 @@ app.get('/api/persons/:id',
     }
 )
 
+//DELETE by id
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    persons = persons.filter(person => person.id !== id)
+    response.status(204).end()
+})
 
+//GET info
 app.get('/info', (request, response) => {
     const personsLength = persons.length;
     const timestamp = new Date();
@@ -57,6 +68,8 @@ app.get('/info', (request, response) => {
 <p>${timestamp}</p>`)
 
 })
+
+
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
