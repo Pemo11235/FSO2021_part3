@@ -75,12 +75,20 @@ const randomID = () => {
     return Math.floor(Math.random() * 1000)
 }
 // POST
-app.post('/api/persons' ,(request,response)=>{
+app.post('/api/persons', (request, response) => {
     const body = request.body;
 
-    if(!body.name) {
+    if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'content missing'
+        })
+    }
+
+    const isNameAlreadyIn = persons.find(person => person.name.includes(body.name))
+
+    if (isNameAlreadyIn) {
+        return response.status(409).json({
+            error: 'name must be unique'
         })
     }
 
