@@ -7,8 +7,9 @@ const {format, token} = require("morgan");
 const cors = require('cors')
 const app = express()
 
-morgan.token('body', (req, res) => (JSON.stringify(req.body)))
+//mongodb+srv://admin:<fso2021>@cluster0.xmxno.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
+morgan.token('body', (req, res) => (JSON.stringify(req.body)))
 app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
