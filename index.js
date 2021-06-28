@@ -65,12 +65,12 @@ app.get('/api/persons/:id',
     }
 )
 
-// //DELETE by id
-// app.delete('/api/persons/:id', (request, response) => {
-//     const id = Number(request.params.id)
-//     persons = persons.filter(person => person.id !== id)
-//     response.status(204).end()
-// })
+//DELETE by id
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndRemove(request.params.id)
+        .then(result => response.status(204).end())
+        .catch(error => next(error))
+})
 //
 // //GET info
 // app.get('/info', (request, response) => {
