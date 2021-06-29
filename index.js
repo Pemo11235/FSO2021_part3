@@ -44,6 +44,13 @@ let persons = [
 app.get('/', (request, response) => {
     response.send('<h1>Hello world!</h1>')
 })
+//GET info
+app.get('/info', (request, response) => {
+    const personsLength = Person.length;
+    const timestamp = new Date();
+    response.send(`<p>Phonebook has info for ${personsLength} people.</p>
+        <p>${timestamp}</p>`)
+})
 
 // GET all
 app.get('/api/persons',
@@ -95,7 +102,7 @@ app.post('/api/persons', (request, response, next) => {
         .save()
         .then(res => response.json(res))
         .catch(error => next(error))
-            // mongoose.connection.close())
+    // mongoose.connection.close())
 })
 //PUT by id
 app.put('/api/persons/:id', (request, response, next) => {
