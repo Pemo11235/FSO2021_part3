@@ -75,52 +75,46 @@ app.delete('/api/persons/:id', (request, response, next) => {
         .then(result => response.status(204).end())
         .catch(error => next(error))
 })
-//
-// //GET info
-// app.get('/info', (request, response) => {
-//     const personsLength = persons.length;
-//     const timestamp = new Date();
-//     response.send(`<p>Phonebook has info for ${personsLength} people.</p>
-// <p>${timestamp}</p>`)
-//
-// })
-
 
 // POST
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body;
 
-    if (body.name === undefined) {
+    if (body.name === undefined || body.name === '' || body.number === '') {
         return response.status(400).json({
             error: 'content missing'
-        })
+        }).end()
     }
-
-    // const isNameAlreadyIn = persons.find(person => person.name.includes(body.name))
-    //
-    // if (isNameAlreadyIn) {
-    //     return response.status(409).json({
-    //         error: 'name must be unique'
-    //     })
-    // }
 
     const person = new Person({
         name: body.name,
         number: body.number,
     })
 
-    // persons = persons.concat(person);
+    person
+        .save()
+        .then(res => response.json(res))
+        .catch(error => next(error))
+            // mongoose.connection.close())
+})
+//PUT by id
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body;
+    console.log(request)
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
 
-    person.save().then(res => {
-        // console.log(`ADDED ${name} NUMBER ${number} TO PHONEBOOK`);
-        response.json(res)
-        // mongoose.connection.close()
-    })
+    Person
+        .findByIdAndUpdate(request.params.id, person, {new: true})
+        .then(updatePerson => response.json(updatePerson))
+        .catch(error => next(error))
 })
 
-const errorHandler= (error, request, response, next) => {
+const errorHandler = (error, request, response, next) => {
     console.log(error.message)
-    if(error.name === 'CastError'){
+    if (error.name === 'CastError') {
         return response.status(400).send({error: 'malformed id'})
     }
     next(error)
