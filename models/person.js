@@ -18,8 +18,8 @@ mongoose
 
 
 const personSchema = new mongoose.Schema({
-    name: {type: String, required: true, unique: true},
-    number: {type: Number, required: true},
+    name: {type: String, required: true, minlength: 3},
+    number: {type: String, required: true, minlength: 8},
 })
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
@@ -30,5 +30,4 @@ personSchema.set('toJSON', {
 })
 
 personSchema.plugin(uniqueValidator)
-
 module.exports = mongoose.model('Person', personSchema)
