@@ -87,11 +87,11 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
     const body = request.body;
 
-    if (body.name === undefined || body.name === '' || body.number === '') {
-        return response.status(400).json({
-            error: 'content missing'
-        }).end()
-    }
+    // if (body.name === undefined || body.name === '' || body.number === '') {
+    //     return response.status(400).json({
+    //         error: 'content missing'
+    //     }).end()
+    // }
 
     const person = new Person({
         name: body.name,
@@ -100,7 +100,7 @@ app.post('/api/persons', (request, response, next) => {
 
     person
         .save()
-        .then(res => response.json(res))
+        .then(res => response.json(res.toJSON()))
         .catch(error => next(error))
     // mongoose.connection.close())
 })
@@ -123,6 +123,10 @@ const errorHandler = (error, request, response, next) => {
     console.log(error.message)
     if (error.name === 'CastError') {
         return response.status(400).send({error: 'malformed id'})
+    }
+    if(error.name === 'ValidationError'){
+        return  response.status(400).send({error: error.message
+        })
     }
     next(error)
 }
